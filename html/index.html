@@ -2,14 +2,29 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>테스트</title>
+    <title>API 테스트</title>
 </head>
 <body>
-    <h1 style="color:blue;">테스트 페이지</h1>
-    <p>이 페이지는 테스트용입니다.</p>
-    <p style="font-weight:bold;">테스트 내용입니다.</p>
-    <input type="text" placeholder="입력하세요">
-    <button>테스트 버튼</button>
+    <button id="btn">API 호출하기</button>
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('btn').addEventListener('click', async () => {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerText = "로딩 중...";
+
+            try {
+                // 클라우드플레어 배포 후 받은 백엔드(Workers) 주소를 넣습니다.
+                const backendUrl = "https://project.parkjieun3052.workers.dev";
+                
+                const response = await fetch(backendUrl);
+                const data = await response.json();
+                
+                resultDiv.innerText = JSON.stringify(data, null, 2);
+            } catch (error) {
+                resultDiv.innerText = "에러 발생: " + error.message;
+            }
+        });
+    </script>
 </body>
 </html>
