@@ -1,0 +1,30 @@
+{
+  "name": "porject",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite front-end",
+    "build": "vite build front-end --outDir ../dist",
+    "preview": "vite preview front-end --outDir ../dist",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/parkjieun3052/project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/parkjieun3052/project/issues"
+  },
+  "homepage": "https://github.com/parkjieun3052/project#readme",
+  "dependencies": {
+    "express": "^5.3.0"
+  },
+  "devDependencies": {
+    "vite": "^8.3.5"
+  }
+}
