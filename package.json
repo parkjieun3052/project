@@ -7,6 +7,8 @@
     "dev": "vite front-end",
     "build": "vite build front-end --outDir ../dist",
     "preview": "vite preview front-end --outDir ../dist",
+    "gcp": "git add . && git commit -m \"update\" && git push",
+    "gcp:msg": "node -e \"const msg=process.argv.slice(1).join(' ')||'update'; const {spawnSync}=require('child_process'); const run=(cmd,args)=>{const r=spawnSync(cmd,args,{stdio:'inherit',shell:true}); if(r.status!==0) process.exit(r.status);}; run('git',['add','.']); run('git',['commit','-m',msg]); run('git',['push']);\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
