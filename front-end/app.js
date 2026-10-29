@@ -1,6 +1,15 @@
 const mapContainer = document.getElementById('map');
+const resultList = document.getElementById('resultList');
 const kakaoJsKey = import.meta.env.VITE_KAKAO_JAVASCRIPT_KEY;
 const kakaoRestKey = import.meta.env.VITE_KAKAO_REST_API_KEY;
+
+// id를 추가하지 않고 현재 HTML 구조에서 컨트롤을 선택
+const nameInput = document.querySelector('input[type="text"]');
+const regionSelect = document.querySelector('select[name="region"]');
+const buttons = document.querySelectorAll('button');
+const nameSearchButton = buttons[0];
+const nearbySearchButton = buttons[1];
+const regionSearchButton = buttons[2];
 
 let kakaoRef;
 let map;
@@ -59,6 +68,21 @@ function renderPlaces(documents) {
 	return markers.length;
 }
 
+function renderResultList(documents) {
+	if (!resultList) {
+		return;
+	}
+
+	resultList.innerHTML = '';
+	for (const doc of documents || []) {
+		const item = document.createElement('li');
+		const name = doc.place_name || '이름 없음';
+		const address = doc.road_address_name || doc.address_name || '주소 없음';
+		item.textContent = `${name} - ${address}`;
+		resultList.appendChild(item);
+	}
+}
+
 async function kakaoGet(url, params) {
 	if (!kakaoRestKey) {
 		throw new Error('VITE_KAKAO_REST_API_KEY 값이 없습니다.');
@@ -97,6 +121,7 @@ async function regionKakaoApi(keyword) {
 	});
 	const json = await response.json();
 	renderPlaces(json.documents);
+	renderResultList(json.documents);
 	return json;
 }
 
@@ -119,6 +144,7 @@ async function addressToCoordinates(address) {
 async function nearbyKakaoApi(address) {
 	const coordinates = await addressToCoordinates(address);
 	if (!coordinates) {
+		renderResultList([]);
 		return null;
 	}
 
@@ -131,7 +157,61 @@ async function nearbyKakaoApi(address) {
 	});
 	const json = await response.json();
 	renderPlaces(json.documents);
+	renderResultList(json.documents);
 	return json;
+}
+
+function bindUiEvents() {
+	if (nameSearchButton) {
+		nameSearchButton.addEventListener('click', async () => {
+			const keyword = (nameInput?.value || '').trim();
+			if (!keyword) {
+				alert('검색어를 입력하세요.');
+				return;
+			}
+
+			try {
+				await regionKakaoApi(keyword);
+			} catch (error) {
+				console.error(error);
+				alert('이름 검색 중 오류가 발생했습니다.');
+			}
+		});
+	}
+
+	if (nearbySearchButton) {
+		nearbySearchButton.addEventListener('click', async () => {
+			const address = (nameInput?.value || '').trim();
+			if (!address) {
+				alert('기준 주소를 입력하세요.');
+				return;
+			}
+
+			try {
+				await nearbyKakaoApi(address);
+			} catch (error) {
+				console.error(error);
+				alert('내 주변 검색 중 오류가 발생했습니다.');
+			}
+		});
+	}
+
+	if (regionSearchButton) {
+		regionSearchButton.addEventListener('click', async () => {
+			const value = (regionSelect?.selectedOptions?.[0]?.textContent || '').trim();
+			if (!value || value === '선택하세요') {
+				alert('지역을 선택하세요.');
+				return;
+			}
+
+			try {
+				await regionKakaoApi(value);
+			} catch (error) {
+				console.error(error);
+				alert('지역 검색 중 오류가 발생했습니다.');
+			}
+		});
+	}
 }
 
 async function initMap() {
@@ -152,6 +232,8 @@ initMap().catch((error) => {
 		mapContainer.textContent = '지도를 불러오지 못했습니다. 콘솔 오류를 확인하세요.';
 	}
 });
+
+bindUiEvents();
 
 // 콘솔 테스트용
 // kakaoApi.region('서울')
