@@ -1,15 +1,9 @@
-// 국토교통부 API 키는 이후 데이터 조회용으로 보관하고,
-// 지도 표시는 카카오 JavaScript SDK를 사용한다.
 const mapContainer = document.getElementById('map');
-const molitApiKey = import.meta.env.VITE_MOLIT_API_KEY;
 const kakaoJsKey = import.meta.env.VITE_KAKAO_JAVASCRIPT_KEY;
-const publicDataApiKey = import.meta.env.VITE_PUBLIC_DATA_API_KEY;
-const youthCenterApiUrl =
-	import.meta.env.VITE_YOUTH_CENTER_API_URL || 'https://api.odcloud.kr/api/15077586/v1/centers';
+const kakaoRestKey = import.meta.env.VITE_KAKAO_REST_API_KEY;
 
 let kakaoRef;
 let map;
-let allCenters = [];
 let markers = [];
 
 function loadKakaoSdk(appKey) {
@@ -27,86 +21,10 @@ function loadKakaoSdk(appKey) {
 		const script = document.createElement('script');
 		script.src = `https://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${encodeURIComponent(appKey)}`;
 		script.async = true;
-		script.onload = () => {
-			window.kakao.maps.load(() => resolve(window.kakao));
-		};
-		script.onerror = () => {
-			reject(new Error('카카오 지도 SDK 로드 실패'));
-		};
-
+		script.onload = () => window.kakao.maps.load(() => resolve(window.kakao));
+		script.onerror = () => reject(new Error('카카오 지도 SDK 로드 실패'));
 		document.head.appendChild(script);
 	});
-}
-
-async function initMap() {
-	if (!mapContainer) {
-		throw new Error('id="map" 요소를 찾지 못했습니다.');
-	}
-
-	kakaoRef = await loadKakaoSdk(kakaoJsKey);
-	const mapOption = {
-		center: new kakaoRef.maps.LatLng(37.5665, 126.9780),
-		level: 4
-	};
-
-	map = new kakaoRef.maps.Map(mapContainer, mapOption);
-
-	// 시작할 때 전체 센터를 가져와 지도에 표시
-	allCenters = await fetchCenters();
-	renderMarkers(allCenters);
-}
-
-function toNumber(value) {
-	const n = Number(value);
-	return Number.isFinite(n) ? n : null;
-}
-
-function readLatLng(center) {
-	const lat =
-		toNumber(center.lat) ??
-		toNumber(center.latitude) ??
-		toNumber(center.y) ??
-		toNumber(center.위도);
-	const lng =
-		toNumber(center.lng) ??
-		toNumber(center.lon) ??
-		toNumber(center.longitude) ??
-		toNumber(center.x) ??
-		toNumber(center.경도);
-
-	if (lat === null || lng === null) {
-		return null;
-	}
-
-	return { lat, lng };
-}
-
-function centerName(center) {
-	return center.centerName || center.facilityName || center.orgNm || center.name || center.기관명 || '';
-}
-
-function centerRegion(center) {
-	return center.sido || center.sigungu || center.address || center.addr || center.소재지 || '';
-}
-
-async function fetchCenters() {
-	if (!publicDataApiKey) {
-		throw new Error('VITE_PUBLIC_DATA_API_KEY 값이 없습니다.');
-	}
-
-	const url = new URL(youthCenterApiUrl);
-	url.searchParams.set('serviceKey', publicDataApiKey);
-	url.searchParams.set('page', '1');
-	url.searchParams.set('perPage', '500');
-	url.searchParams.set('returnType', 'JSON');
-
-	const res = await fetch(url.toString());
-	if (!res.ok) {
-		throw new Error(`공공데이터 요청 실패: ${res.status}`);
-	}
-
-	const json = await res.json();
-	return Array.isArray(json.data) ? json.data : [];
 }
 
 function clearMarkers() {
@@ -116,17 +34,18 @@ function clearMarkers() {
 	markers = [];
 }
 
-function renderMarkers(centers) {
+function renderPlaces(documents) {
 	clearMarkers();
 	const bounds = new kakaoRef.maps.LatLngBounds();
 
-	for (const center of centers) {
-		const latLng = readLatLng(center);
-		if (!latLng) {
+	for (const doc of documents || []) {
+		const x = Number(doc.x);
+		const y = Number(doc.y);
+		if (!Number.isFinite(x) || !Number.isFinite(y)) {
 			continue;
 		}
 
-		const position = new kakaoRef.maps.LatLng(latLng.lat, latLng.lng);
+		const position = new kakaoRef.maps.LatLng(y, x);
 		const marker = new kakaoRef.maps.Marker({ position });
 		marker.setMap(map);
 		markers.push(marker);
@@ -140,56 +59,91 @@ function renderMarkers(centers) {
 	return markers.length;
 }
 
-function distanceKm(lat1, lng1, lat2, lng2) {
-	const toRad = (deg) => (deg * Math.PI) / 180;
-	const dLat = toRad(lat2 - lat1);
-	const dLng = toRad(lng2 - lng1);
-	const a =
-		Math.sin(dLat / 2) ** 2 +
-		Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
-	return 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-}
-
-//VITE_PUBLIC_DATA_API_KEY를 사용해서 검색,조회할 것
-//상담센터 이름으로 검색하기 기능
-function searchByName(keyword) {
-	const q = (keyword || '').trim().toLowerCase();
-	const filtered = allCenters.filter((c) => centerName(c).toLowerCase().includes(q));
-	renderMarkers(filtered);
-	return filtered;
-}
-
-//내 주변 상담센터 조회기능
-function searchNearby(radiusKm = 5) {
-	if (!navigator.geolocation) {
-		throw new Error('브라우저가 위치 정보를 지원하지 않습니다.');
+async function kakaoGet(url, params) {
+	if (!kakaoRestKey) {
+		throw new Error('VITE_KAKAO_REST_API_KEY 값이 없습니다.');
 	}
 
-	return new Promise((resolve, reject) => {
-		navigator.geolocation.getCurrentPosition(
-			(pos) => {
-				const { latitude, longitude } = pos.coords;
-				const filtered = allCenters.filter((c) => {
-					const latLng = readLatLng(c);
-					if (!latLng) {
-						return false;
-					}
-					return distanceKm(latitude, longitude, latLng.lat, latLng.lng) <= radiusKm;
-				});
-				renderMarkers(filtered);
-				resolve(filtered);
-			},
-			(err) => reject(err)
-		);
+	const endpoint = new URL(url);
+	Object.entries(params || {}).forEach(([k, v]) => endpoint.searchParams.set(k, String(v)));
+
+	const response = await fetch(endpoint.toString(), {
+		headers: { Authorization: `KakaoAK ${kakaoRestKey}` }
 	});
+
+	if (!response.ok) {
+		const text = await response.text();
+		throw new Error(`카카오 API 오류 ${response.status}: ${text}`);
+	}
+
+	return response;
 }
 
-// 지역별 상담센터 조회기능
-function searchByRegion(regionKeyword) {
-	const q = (regionKeyword || '').trim().toLowerCase();
-	const filtered = allCenters.filter((c) => centerRegion(c).toLowerCase().includes(q));
-	renderMarkers(filtered);
-	return filtered;
+// 정적 지도 조회 (python map_api)
+async function mapApi(mapLocation) {
+	const response = await kakaoGet('https://dapi.kakao.com/v2/maps/staticmap', {
+		center: mapLocation,
+		size: '640x480',
+		level: 3,
+		markers: `location:${mapLocation}|option:false`
+	});
+	return response.blob();
+}
+
+// 지역별 상담센터 검색 (python region_kakaoapi)
+async function regionKakaoApi(keyword) {
+	const response = await kakaoGet('https://dapi.kakao.com/v2/local/search/keyword.json', {
+		query: `${keyword} 상담센터`
+	});
+	const json = await response.json();
+	renderPlaces(json.documents);
+	return json;
+}
+
+// 주소를 좌표로 변환 (python address_to_coordinates)
+async function addressToCoordinates(address) {
+	const response = await kakaoGet('https://dapi.kakao.com/v2/local/search/address.json', {
+		query: address
+	});
+	const json = await response.json();
+	const first = json.documents?.[0];
+
+	if (!first) {
+		return null;
+	}
+
+	return { x: Number(first.x), y: Number(first.y) };
+}
+
+// 내 주변 상담센터 검색 (python nearby_kakaoapi)
+async function nearbyKakaoApi(address) {
+	const coordinates = await addressToCoordinates(address);
+	if (!coordinates) {
+		return null;
+	}
+
+	const response = await kakaoGet('https://dapi.kakao.com/v2/local/search/keyword.json', {
+		query: '상담센터',
+		x: coordinates.x,
+		y: coordinates.y,
+		radius: 5000,
+		sort: 'distance'
+	});
+	const json = await response.json();
+	renderPlaces(json.documents);
+	return json;
+}
+
+async function initMap() {
+	if (!mapContainer) {
+		throw new Error('id="map" 요소를 찾지 못했습니다.');
+	}
+
+	kakaoRef = await loadKakaoSdk(kakaoJsKey);
+	map = new kakaoRef.maps.Map(mapContainer, {
+		center: new kakaoRef.maps.LatLng(37.5665, 126.978),
+		level: 4
+	});
 }
 
 initMap().catch((error) => {
@@ -199,13 +153,13 @@ initMap().catch((error) => {
 	}
 });
 
-// 추후 국토교통부 API를 연결할 때 사용
-console.log('MOLIT API key loaded:', Boolean(molitApiKey));
-
-// 콘솔에서 바로 테스트할 수 있게 전역으로 노출
-// 예시: centerSearch.byName('서울'), centerSearch.byRegion('부산'), centerSearch.nearby(10)
-window.centerSearch = {
-	byName: searchByName,
-	nearby: searchNearby,
-	byRegion: searchByRegion
+// 콘솔 테스트용
+// kakaoApi.region('서울')
+// kakaoApi.nearby('서울시청')
+// kakaoApi.toCoordinates('서울특별시 중구 세종대로 110')
+window.kakaoApi = {
+	mapApi,
+	region: regionKakaoApi,
+	toCoordinates: addressToCoordinates,
+	nearby: nearbyKakaoApi
 };

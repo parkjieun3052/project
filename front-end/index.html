@@ -3,43 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>상담센터 검색하기</title>
+    <title>상담센터 지도</title>
 </head>
 <body>
-    <h1>상담센터 이름으로 검색하기</h1>
-    <input type="text" placeholder="상담센터 이름을 입력하세요">
+    <h1>이름으로 검색하기</h1>
+    <input type="text"  placeholder="주소를 입력하세요">
+    <button >검색</button>
+
+    <h1>내 주변 상담센터</h1>
+
+    <button >내 주변 상담센터 조회 하기</button>
+
+    <h1>지역별 상담센터</h1>
+    <p>지역을 선택하여 상담센터를 확인하세요</p>
+    <label for="regionSelect">지역을 선택하세요:</label>
+    <select name="region">
+        <option value="" selected>선택하세요</option>
+        <option value="seoul">서울특별시</option>
+        <option value="busan">부산광역시</option>
+        <option value="daegu">대구광역시</option>
+        <option value="incheon">인천광역시</option>
+        <option value="gwangju">광주광역시</option>
+        <option value="daejeon">대전광역시</option>
+        <option value="ulsan">울산광역시</option>
+        <option value="sejong">세종특별자치시</option>
+        <option value="gyeonggi">경기도</option>
+        <option value="gangwon">강원도</option>
+        <option value="gyeongsangnam">경상남도</option>
+        <option value="gyeongsangbuk">경상북도</option>
+        <option value="jeonnam">전라남도</option>
+        <option value="jeonbuk">전라북도</option>
+        <option value="chungnam">충청남도</option>
+        <option value="chungbuk">충청북도</option>
+        <option value="jeju">제주특별자치도</option>
+    </select>
     <button>검색</button>
 
-    <h1>내 주변 상담센터 조회하기</h1>
-    <button>조회하기</button>
 
-    <h1>지역별 상담센터 조회하기</h1>
-    <select>
-        <option value="">지역을 선택하세요</option>
-        <option value="seoul">서울</option>
-        <option value="busan">부산</option>
-        <option value="daegu">대구</option>
-        <option value="incheon">인천</option>
-        <option value="gwangju">광주</option>
-        <option value="daejeon">대전</option>
-        <option value="ulsan">울산</option>
-        <option value="gyeonggi">경기</option>
-        <option value="gangwon">강원</option>
-        <option value="chungbuk">충북</option>
-        <option value="chungnam">충남</option>
-        <option value="jeonbuk">전북</option>
-        <option value="jeonnam">전남</option>
-        <option value="gyeongbuk">경북</option>
-        <option value="gyeongnam">경남</option>
-        <option value="jeju">제주</option>
-    </select>
-    <button>조회하기</button>
-    <div id="map" style="width:100%;height:400px;">지도표시하는 곳</div> 
+    <p>지도에서 상담센터 위치 확인하기</p>
+    <div id="map" style="width: 760px; height: 420px; margin-top: 20px; border: 1px solid #ddd;"></div>
 
 
+
+    <!-- 상담센터 위치확인 결과 리스트 보여주기 -->
+    <ul id="resultList"></ul>   
+    
     <script type="module" src="./app.js"></script>
 </body>
 </html>
-
-
-        
