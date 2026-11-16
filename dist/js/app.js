@@ -1,7 +1,13 @@
 const mapContainer = document.getElementById('map');
 const resultList = document.getElementById('resultList');
-const kakaoJsKey = import.meta.env.VITE_KAKAO_JAVASCRIPT_KEY;
-const kakaoRestKey = import.meta.env.VITE_KAKAO_REST_API_KEY;
+
+const getEnvValue = (key) => {
+  const env = typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env : {};
+  return env[key] ?? '';
+};
+
+const kakaoJsKey = getEnvValue('VITE_KAKAO_JAVASCRIPT_KEY');
+const kakaoRestKey = getEnvValue('VITE_KAKAO_REST_API_KEY');
 
 const searchInput = document.getElementById('searchInput') || document.getElementById('centerKeyword');
 const searchButton = document.getElementById('searchButton') || document.querySelector('#nameSearchForm button[type="submit"]');
@@ -17,7 +23,7 @@ let markers = [];
 function loadKakaoSdk(appKey) {
   return new Promise((resolve, reject) => {
     if (!appKey) {
-      reject(new Error('VITE_KAKAO_JAVASCRIPT_KEY 값이 없습니다.'));
+      reject(new Error('VITE_KAKAO_JAVASCRIPT_KEY 값이 없습니다. Vite 환경변수 또는 Cloudflare Pages 환경변수를 확인하세요.'));
       return;
     }
 
