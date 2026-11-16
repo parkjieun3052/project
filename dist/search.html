@@ -1,70 +1,66 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="토닥에서 내 주변의 상담센터를 검색해 보세요." />
-  <title>상담센터 찾기 | 토닥</title>
-  <link rel="icon" type="image/png" href="icon-img/counsellor-icon.png" />
-  <link rel="stylesheet" href="css/style.css" />
-</head>
-<body>
-  <header class="site-header">
+    <!DOCTYPE html>
+    <html lang="ko">
+    <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="토닥에서 내 주변의 상담센터를 검색해 보세요." />
+    <title>상담센터 찾기 | 토닥</title>
+    <link rel="icon" type="image/png" href="icon-img/counsellor-icon.png" />
+    <link rel="stylesheet" href="css/style.css" />
+    </head>
+    <body>
+    <header class="site-header">
     <a class="brand" href="index.html" aria-label="토닥 홈">
-      <span class="brand-mark" aria-hidden="true"><img src="icon-img/counsellor-icon.png" alt="토닥 로고" /></span>
-      <span class="brand-name">토닥</span><span class="brand-tagline">마음이 쉬어가는 곳</span>
+        <span class="brand-mark" aria-hidden="true"><img src="icon-img/counsellor-icon.png" alt="토닥 로고" /></span>
+        <span class="brand-name">토닥</span><span class="brand-tagline">마음이 쉬어가는 곳</span>
     </a>
     <nav class="main-nav" id="mainNav"><a class="active" href="search.html">상담센터 찾기</a><a href="#" class="inactive-link">상담사 찾기</a><a href="#" class="inactive-link">정부바우처</a></nav>
     <div class="header-actions"><a href="#" class="login-link inactive-link">로그인</a><button class="menu-button" id="menuButton" aria-label="메뉴 열기" aria-expanded="false"><span></span><span></span><span></span></button></div>
-  </header>
+    </header>
 
-  <main class="search-main">
+    <main class="search-main">
     <div class="breadcrumb"><a href="index.html">홈</a><span>›</span><span>상담센터 검색</span></div>
     <section class="page-title"><h1>나에게 맞는 상담센터 찾기</h1><p>이름으로, 내 주변에서, 원하는 지역에서. 편한 방법으로 마음 돌봄을 시작해보세요.</p></section>
 
     <section class="search-name-panel">
-      <div class="panel-intro"><h2>이름으로 검색하기</h2><p>찾고 있는 상담센터가 있나요?<br />센터 이름이나 주소를 입력해주세요.</p></div>
-      <form class="name-search-form" id="nameSearchForm">
+        <div class="panel-intro"><h2>이름으로 검색하기</h2><p>찾고 있는 상담센터가 있나요?<br />센터 이름이나 주소를 입력해주세요.</p></div>
+        <form class="name-search-form" id="nameSearchForm">
         <label for="centerKeyword">센터명 또는 주소</label>
         <div class="input-action-row"><div class="input-wrap"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="centerKeyword" type="search" placeholder="센터명 또는 주소를 입력하세요" /></div><button class="button button-primary" type="submit">검색</button></div>
         <small>예: 서울 종로구, 마음상담센터</small>
-      </form>
+        </form>
     </section>
 
     <section class="search-method-grid">
-      <article class="method-card nearby-card">
+        <article class="method-card nearby-card">
         <div class="method-heading"><span class="method-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg></span><h2>내 주변 상담센터</h2></div>
         <p>현재 위치를 기준으로 가까운 상담센터를 찾아보세요.</p>
         <button class="button button-primary nearby-button" id="nearbyButton"><svg viewBox="0 0 24 24"><path d="m3 11 18-8-8 18-2-8-8-2Z"/></svg>내 주변 상담센터 조회하기</button>
         <small class="helper-text">ⓘ 내 주변 검색을 위해 위치 정보 이용 동의가 필요해요.</small>
-      </article>
-      <article class="method-card region-card">
+        </article>
+        <article class="method-card region-card">
         <div class="method-heading"><span class="method-icon method-icon-lime"><svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><h2>지역별 상담센터</h2></div>
         <p>원하는 지역을 선택하여 상담센터를 확인하세요.</p>
         <form class="region-form" id="regionSearchForm"><label class="sr-only" for="regionSelect">지역 선택</label><select id="regionSelect"><option value="">지역을 선택하세요</option><option value="서울">서울</option><option value="경기">경기</option><option value="인천">인천</option><option value="부산">부산</option><option value="대구">대구</option><option value="대전">대전</option><option value="광주">광주</option></select><button class="button button-lime" type="submit">검색</button></form>
         <small class="helper-text">시·도 단위로 지역을 선택할 수 있어요.</small>
-      </article>
+        </article>
     </section>
 
     <section class="map-section">
-      <div class="map-heading"><h2>지도에서 상담센터 위치 확인하기</h2><p>검색한 지역의 상담센터 위치를 지도에서 살펴보세요.</p></div>
-      <div id="map" class="search-map" role="img" aria-label="상담센터 지도 표시 영역"></div>
-      <ul id="resultList" class="result-list" aria-live="polite"></ul>
-      <p class="map-caption">ⓘ 지역 또는 주소를 검색하면 해당 위치의 상담센터를 확인할 수 있어요.</p>
+        <div class="map-heading"><h2>지도에서 상담센터 위치 확인하기</h2><p>검색한 지역의 상담센터 위치를 지도에서 살펴보세요.</p></div>
+        <div id="map" class="search-map" role="img" aria-label="상담센터 지도 표시 영역"></div>
+        <ul id="resultList" class="result-list" aria-live="polite"></ul>
+        <p class="map-caption">ⓘ 지역 또는 주소를 검색하면 해당 위치의 상담센터를 확인할 수 있어요.</p>
     </section>
 
     <section class="results-section" id="resultsSection" aria-live="polite">
-      <div class="results-heading"><div><h2>상담센터 검색 결과</h2><p id="resultMessage">지역을 검색하면 상담센터 목록이 여기에 표시됩니다.</p></div><span class="result-count" id="resultCount">3개 센터</span></div>
-      <div class="center-results" id="centerResults">
-        <article class="center-result"><div class="center-thumb thumb-one"><span>마음이 편안해지는 공간</span></div><div class="center-info"><h3>마음숲 상담센터</h3><p>서울 종로구 세종대로 00</p><span class="center-tags">개인상담 · 심리검사</span></div><a href="#" class="text-link inactive-link">상세보기 →</a></article>
-        <article class="center-result"><div class="center-thumb thumb-two"><span>함께 이야기하는 공간</span></div><div class="center-info"><h3>온마음 심리상담센터</h3><p>서울 마포구 월드컵로 00</p><span class="center-tags">개인상담 · 가족상담</span></div><a href="#" class="text-link inactive-link">상세보기 →</a></article>
-        <article class="center-result"><div class="center-thumb thumb-three"><span>천천히 쉬어가는 공간</span></div><div class="center-info"><h3>토닥 마음상담센터</h3><p>경기 성남시 분당구 00로</p><span class="center-tags">청소년상담 · 심리검사</span></div><a href="#" class="text-link inactive-link">상세보기 →</a></article>
-      </div>
+        <div class="results-heading"><div><h2>상담센터 검색 결과</h2><p id="resultMessage">검색을 실행하면 상담센터 결과가 여기에 표시됩니다.</p></div><span class="result-count" id="resultCount">0개 센터</span></div>
+        <div class="center-results" id="centerResults"></div>
     </section>
-  </main>
+    </main>
 
-  <footer class="site-footer"><div class="footer-brand"><strong>토닥</strong><span>당신의 마음에, 토닥.</span></div><div class="footer-links"><a href="#" class="inactive-link">이용약관</a><a href="#" class="inactive-link">개인정보처리방침</a><a href="mailto:hello@todak.example">문의하기</a></div><small>© TODAK. All rights reserved.</small><small class="footer-note">마음 돌봄의 시작을 함께합니다.</small></footer>
-  <script type="module" src="./app.js"></script>
-  <script type="module" src="./js/main.js"></script>
-</body>
-</html>
+    <footer class="site-footer"><div class="footer-brand"><strong>토닥</strong><span>당신의 마음에, 토닥.</span></div><div class="footer-links"><a href="#" class="inactive-link">이용약관</a><a href="#" class="inactive-link">개인정보처리방침</a><a href="mailto:hello@todak.example">문의하기</a></div><small>© TODAK. All rights reserved.</small><small class="footer-note">마음 돌봄의 시작을 함께합니다.</small></footer>
+    <script type="module" src="./app.js"></script>
+    <script type="module" src="./js/main.js"></script>
+    </body>
+    </html>
