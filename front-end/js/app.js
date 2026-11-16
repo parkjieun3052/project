@@ -1,11 +1,14 @@
 const mapContainer = document.getElementById('map');
 const resultList = document.getElementById('resultList');
 
-const kakaoJsKey = import.meta.env.VITE_KAKAO_JAVASCRIPT_KEY;
-const kakaoRestKey = import.meta.env.VITE_KAKAO_REST_API_KEY;
+const getEnvValue = (key) => {
+  const env = import.meta.env || {};
+  return env[key] ?? '';
+};
 
 const kakaoJsKey = getEnvValue('VITE_KAKAO_JAVASCRIPT_KEY');
 const kakaoRestKey = getEnvValue('VITE_KAKAO_REST_API_KEY');
+
 
 const searchInput = document.getElementById('searchInput') || document.getElementById('centerKeyword');
 const searchButton = document.getElementById('searchButton') || document.querySelector('#nameSearchForm button[type="submit"]');
