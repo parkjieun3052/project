@@ -1,5 +1,8 @@
 const mapContainer = document.getElementById('map');
 const resultList = document.getElementById('resultList');
+const resultMessage = document.getElementById('resultMessage');
+const resultCount = document.getElementById('resultCount');
+const centerResults = document.getElementById('centerResults');
 const kakaoJsKey = import.meta.env.VITE_KAKAO_JAVASCRIPT_KEY;
 const kakaoRestKey = import.meta.env.VITE_KAKAO_REST_API_KEY;
 
@@ -14,6 +17,91 @@ let kakaoRef;
 let map;
 let markers = [];
 
+function updateSearchSummary(label, count) {
+  if (resultMessage) {
+    resultMessage.textContent = label;
+  }
+  if (resultCount) {
+    resultCount.textContent = `${count}개 센터`;
+  }
+}
+
+function renderCenterResults(documents, label = '검색 결과') {
+  if (!centerResults) {
+    return;
+  }
+
+  centerResults.innerHTML = '';
+
+  if (!documents || documents.length === 0) {
+    updateSearchSummary(`${label}에 대한 검색 결과가 없습니다.`, 0);
+    const emptyState = document.createElement('div');
+    emptyState.className = 'empty-state';
+    emptyState.textContent = '검색 결과가 없습니다. 다른 키워드로 다시 시도해보세요.';
+    centerResults.appendChild(emptyState);
+    return;
+  }
+
+  const safeDocs = documents.slice(0, 10);
+  updateSearchSummary(`${label} 기준으로 상담센터를 찾았습니다.`, safeDocs.length);
+
+  safeDocs.forEach((doc, index) => {
+    const article = document.createElement('article');
+    article.className = 'center-result';
+
+    const thumb = document.createElement('div');
+    thumb.className = `center-thumb thumb-${(index % 3) + 1}`;
+    const thumbText = document.createElement('span');
+    thumbText.textContent = doc.category_name || '상담센터';
+    thumb.appendChild(thumbText);
+
+    const info = document.createElement('div');
+    info.className = 'center-info';
+
+    const title = document.createElement('h3');
+    title.textContent = doc.place_name || '상담센터';
+
+    const address = document.createElement('p');
+    address.textContent = doc.road_address_name || doc.address_name || '주소 정보 없음';
+
+    const tag = document.createElement('span');
+    tag.className = 'center-tags';
+    tag.textContent = doc.category_group_name || '상담센터';
+
+    info.appendChild(title);
+    info.appendChild(address);
+    info.appendChild(tag);
+
+    const link = document.createElement('a');
+    link.href = '#';
+    link.className = 'text-link inactive-link';
+    link.textContent = '상세보기 →';
+
+    article.appendChild(thumb);
+    article.appendChild(info);
+    article.appendChild(link);
+    centerResults.appendChild(article);
+  });
+}
+
+function renderFallbackMap(message = '카카오 지도를 불러오지 못해 임시 지도로 표시합니다.') {
+  if (!mapContainer) {
+    return;
+  }
+
+  mapContainer.innerHTML = `
+    <div class="fallback-map-overlay">
+      <div class="fallback-map-tag">지도 로딩 대기 중</div>
+      <div class="fallback-map-pin pin-a"></div>
+      <div class="fallback-map-pin pin-b"></div>
+      <div class="fallback-map-pin pin-c"></div>
+      <div class="fallback-map-label">${message}</div>
+    </div>
+  `;
+
+  mapContainer.classList.add('is-fallback');
+}
+
 function loadKakaoSdk(appKey) {
   return new Promise((resolve, reject) => {
     if (!appKey) {
@@ -27,9 +115,16 @@ function loadKakaoSdk(appKey) {
     }
 
     const script = document.createElement('script');
-    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${encodeURIComponent(appKey)}`;
+    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?autoload=false&libraries=services&appkey=${encodeURIComponent(appKey)}`;
     script.async = true;
-    script.onload = () => window.kakao.maps.load(() => resolve(window.kakao));
+    script.crossOrigin = 'anonymous';
+    script.onload = () => {
+      if (window.kakao && window.kakao.maps) {
+        window.kakao.maps.load(() => resolve(window.kakao));
+        return;
+      }
+      reject(new Error('카카오 지도 SDK가 로드되었지만 초기화되지 않았습니다.'));
+    };
     script.onerror = () => reject(new Error('카카오 지도 SDK 로드 실패'));
     document.head.appendChild(script);
   });
@@ -119,8 +214,10 @@ async function regionKakaoApi(keyword) {
     query: `${keyword} 상담센터`
   });
   const json = await response.json();
-  renderPlaces(json.documents);
-  renderResultList(json.documents);
+  const documents = json.documents || [];
+  renderPlaces(documents);
+  renderResultList(documents);
+  renderCenterResults(documents, keyword || '검색 결과');
   return json;
 }
 
@@ -142,6 +239,7 @@ async function nearbyKakaoApi(address) {
   const coordinates = await addressToCoordinates(address);
   if (!coordinates) {
     renderResultList([]);
+    renderCenterResults([], address || '현재 위치');
     return null;
   }
 
@@ -153,8 +251,10 @@ async function nearbyKakaoApi(address) {
     sort: 'distance'
   });
   const json = await response.json();
-  renderPlaces(json.documents);
-  renderResultList(json.documents);
+  const documents = json.documents || [];
+  renderPlaces(documents);
+  renderResultList(documents);
+  renderCenterResults(documents, address || '현재 위치 주변');
   return json;
 }
 
@@ -210,6 +310,7 @@ async function handleNearbySearch() {
       const json = await response.json();
       renderPlaces(json.documents);
       renderResultList(json.documents);
+      renderCenterResults(json.documents, '내 주변 상담센터');
       return;
     }
 
@@ -272,12 +373,33 @@ async function initMap() {
     return;
   }
 
-  kakaoRef = await loadKakaoSdk(kakaoJsKey);
-  map = new kakaoRef.maps.Map(mapContainer, {
-    center: new kakaoRef.maps.LatLng(37.5665, 126.978),
-    level: 4
-  });
+  try {
+    kakaoRef = await loadKakaoSdk(kakaoJsKey);
+    map = new kakaoRef.maps.Map(mapContainer, {
+      center: new kakaoRef.maps.LatLng(37.5665, 126.978),
+      level: 4
+    });
+  } catch (error) {
+    console.error(error);
+    renderFallbackMap('카카오 지도 키 또는 도메인 설정을 확인해 주세요.');
+  }
 }
+
+bindUiEvents();
+
+const params = new URLSearchParams(window.location.search);
+const initialKeyword = params.get('keyword');
+if (initialKeyword && searchInput) {
+  searchInput.value = initialKeyword;
+  handleSearch();
+}
+
+window.kakaoApi = {
+  mapApi,
+  region: regionKakaoApi,
+  toCoordinates: addressToCoordinates,
+  nearby: nearbyKakaoApi
+};
 
 initMap().catch((error) => {
   console.error(error);

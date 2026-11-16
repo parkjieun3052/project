@@ -84,6 +84,24 @@ function renderCenterResults(documents, label = '검색 결과') {
   });
 }
 
+function renderFallbackMap(message = '카카오 지도를 불러오지 못해 임시 지도로 표시합니다.') {
+  if (!mapContainer) {
+    return;
+  }
+
+  mapContainer.innerHTML = `
+    <div class="fallback-map-overlay">
+      <div class="fallback-map-tag">지도 로딩 대기 중</div>
+      <div class="fallback-map-pin pin-a"></div>
+      <div class="fallback-map-pin pin-b"></div>
+      <div class="fallback-map-pin pin-c"></div>
+      <div class="fallback-map-label">${message}</div>
+    </div>
+  `;
+
+  mapContainer.classList.add('is-fallback');
+}
+
 function loadKakaoSdk(appKey) {
   return new Promise((resolve, reject) => {
     if (!appKey) {
@@ -97,9 +115,16 @@ function loadKakaoSdk(appKey) {
     }
 
     const script = document.createElement('script');
-    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${encodeURIComponent(appKey)}`;
+    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?autoload=false&libraries=services&appkey=${encodeURIComponent(appKey)}`;
     script.async = true;
-    script.onload = () => window.kakao.maps.load(() => resolve(window.kakao));
+    script.crossOrigin = 'anonymous';
+    script.onload = () => {
+      if (window.kakao && window.kakao.maps) {
+        window.kakao.maps.load(() => resolve(window.kakao));
+        return;
+      }
+      reject(new Error('카카오 지도 SDK가 로드되었지만 초기화되지 않았습니다.'));
+    };
     script.onerror = () => reject(new Error('카카오 지도 SDK 로드 실패'));
     document.head.appendChild(script);
   });
@@ -347,19 +372,17 @@ async function initMap() {
     return;
   }
 
-  kakaoRef = await loadKakaoSdk(kakaoJsKey);
-  map = new kakaoRef.maps.Map(mapContainer, {
-    center: new kakaoRef.maps.LatLng(37.5665, 126.978),
-    level: 4
-  });
-}
-
-initMap().catch((error) => {
-  console.error(error);
-  if (mapContainer) {
-    mapContainer.textContent = '지도를 불러오지 못했습니다. 콘솔 오류를 확인하세요.';
+  try {
+    kakaoRef = await loadKakaoSdk(kakaoJsKey);
+    map = new kakaoRef.maps.Map(mapContainer, {
+      center: new kakaoRef.maps.LatLng(37.5665, 126.978),
+      level: 4
+    });
+  } catch (error) {
+    console.error(error);
+    renderFallbackMap('카카오 지도 키 또는 도메인 설정을 확인해 주세요.');
   }
-});
+}
 
 bindUiEvents();
 
