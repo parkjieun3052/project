@@ -1,62 +1,79 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>토닥(Todak)</title>
-    <link rel="icon" type="image/png" href="./icon-img/counsellor-icon.png">
-    <link rel="stylesheet" href="./style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="토닥 - 마음이 쉬어가는 곳, 가까운 상담센터를 찾아보세요." />
+  <title>토닥 | 마음이 쉬어가는 곳</title>
+  <link rel="icon" type="image/png" href="icon-img/counsellor-icon.png" />
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-    <header class="topbar">
-        <div class="brand">
-            <img src="./icon-img/counsellor-icon.png" alt="Todak Logo">
-            <span class="brand-name">토닥</span>
-        </div>
-    </header>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="토닥 홈">
+      <span class="brand-mark" aria-hidden="true"><img src="icon-img/counsellor-icon.png" alt="토닥 로고" /></span>
+      <span class="brand-name">토닥</span>
+      <span class="brand-tagline">마음이 쉬어가는 곳</span>
+    </a>
+    <nav class="main-nav" id="mainNav">
+      <a href="search.html">상담센터 찾기</a>
+      <a href="#" class="inactive-link">상담사 찾기</a>
+      <a href="#" class="inactive-link">정부바우처</a>
+    </nav>
+    <div class="header-actions">
+      <a href="#" class="login-link inactive-link">로그인</a>
+      <button class="menu-button" id="menuButton" aria-label="메뉴 열기" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </header>
 
-    <h1>이름으로 검색하기</h1>
-    <input type="text"  placeholder="주소를 입력하세요">
-    <button >검색</button>
+  <main class="home-main">
+    <section class="hero-banner">
+      <span class="hero-pill">마음을 돌보는 작은 시작</span>
+      <div class="hero-decoration decoration-top"></div>
+      <div class="hero-decoration decoration-bottom"></div>
+      <span class="hero-dot dot-one"></span><span class="hero-dot dot-two"></span>
+      <div class="hero-content">
+        <h1>누구나 쉽게 시작하는<br />일상 속 <span>심리상담</span></h1>
+        <p>내 마음을 알아주는 상담, 가까운 곳에서 만나보세요.<br />토닥이 나에게 맞는 상담을 찾는 여정을 함께할게요.</p>
+        <a class="button button-primary hero-button" href="search.html">나에게 맞는 상담 찾기 <span aria-hidden="true">→</span></a>
+        <small>당신의 속도에 맞춰, 천천히 시작해도 괜찮아요.</small>
+      </div>
+    </section>
 
-    <h1>내 주변 상담센터</h1>
+    <section class="quick-section">
+      <div class="section-heading">
+        <h2>지금, 어떤 도움이 필요하세요?</h2>
+        <p>나에게 필요한 마음 돌봄을 찾아보세요.</p>
+      </div>
+      <div class="quick-grid">
+        <a class="quick-card quick-card-tint" href="search.html">
+          <span class="quick-icon"><svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
+          <span class="quick-kicker">가까운 곳에서</span>
+          <strong>상담센터 검색 <span>→</span></strong>
+          <p>우리 동네 가까운 상담센터를 찾아보세요.</p>
+        </a>
+        <a class="quick-card inactive-link" href="#">
+          <span class="quick-icon quick-icon-light"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg></span>
+          <span class="quick-kicker">나에게 맞는 전문가</span>
+          <strong>상담사 검색 <span>→</span></strong>
+          <p>내 이야기에 귀 기울여 줄 전문가를 만나보세요.</p>
+        </a>
+        <a class="quick-card quick-card-tint inactive-link" href="#">
+          <span class="quick-icon quick-icon-lime"><svg viewBox="0 0 24 24"><path d="M4 12.5 9 17l11-11"/><path d="M20 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10"/></svg></span>
+          <span class="quick-kicker">부담은 가볍게</span>
+          <strong>정부바우처 검색 <span>→</span></strong>
+          <p>이용 가능한 심리상담 지원제도를 알아보세요.</p>
+        </a>
+      </div>
+    </section>
+  </main>
 
-    <button >내 주변 상담센터 조회 하기</button>
-
-    <h1>지역별 상담센터</h1>
-    <p>지역을 선택하여 상담센터를 확인하세요</p>
-    <label for="regionSelect">지역을 선택하세요:</label>
-    <select name="region">
-        <option value="" selected>선택하세요</option>
-        <option value="seoul">서울특별시</option>
-        <option value="busan">부산광역시</option>
-        <option value="daegu">대구광역시</option>
-        <option value="incheon">인천광역시</option>
-        <option value="gwangju">광주광역시</option>
-        <option value="daejeon">대전광역시</option>
-        <option value="ulsan">울산광역시</option>
-        <option value="sejong">세종특별자치시</option>
-        <option value="gyeonggi">경기도</option>
-        <option value="gangwon">강원도</option>
-        <option value="gyeongsangnam">경상남도</option>
-        <option value="gyeongsangbuk">경상북도</option>
-        <option value="jeonnam">전라남도</option>
-        <option value="jeonbuk">전라북도</option>
-        <option value="chungnam">충청남도</option>
-        <option value="chungbuk">충청북도</option>
-        <option value="jeju">제주특별자치도</option>
-    </select>
-    <button>검색</button>
-
-
-    <p>지도에서 상담센터 위치 확인하기</p>
-    <div id="map" style="width: 760px; height: 420px; margin-top: 20px; border: 1px solid #ddd;"></div>
-
-
-
-    <!-- 상담센터 위치확인 결과 리스트 보여주기 -->
-    <ul id="resultList"></ul>   
-    
-    <script type="module" src="./app.js"></script>
+  <footer class="site-footer">
+    <div class="footer-brand"><strong>토닥</strong><span>당신의 마음에, 토닥.</span></div>
+    <div class="footer-links"><a href="#" class="inactive-link">이용약관</a><a href="#" class="inactive-link">개인정보처리방침</a><a href="mailto:hello@todak.example">문의하기</a></div>
+    <small>© TODAK. All rights reserved.</small>
+    <small class="footer-note">마음 돌봄의 시작을 함께합니다.</small>
+  </footer>
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>
