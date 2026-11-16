@@ -27,9 +27,15 @@ function loadKakaoSdk(appKey) {
     }
 
     const script = document.createElement('script');
-    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${encodeURIComponent(appKey)}`;
+    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?autoload=false&libraries=services&appkey=${encodeURIComponent(appKey)}`;
     script.async = true;
-    script.onload = () => window.kakao.maps.load(() => resolve(window.kakao));
+    script.onload = () => {
+      if (window.kakao && window.kakao.maps) {
+        window.kakao.maps.load(() => resolve(window.kakao));
+        return;
+      }
+      reject(new Error('카카오 지도 SDK가 로드되었지만 초기화되지 않았습니다.'));
+    };
     script.onerror = () => reject(new Error('카카오 지도 SDK 로드 실패'));
     document.head.appendChild(script);
   });
@@ -285,4 +291,20 @@ window.kakaoApi = {
   toCoordinates: addressToCoordinates,
   nearby: nearbyKakaoApi
 };
+
+bindUiEvents();
+
+const params = new URLSearchParams(window.location.search);
+const initialKeyword = params.get('keyword');
+if (initialKeyword && searchInput) {
+  searchInput.value = initialKeyword;
+  handleSearch();
+}
+
+initMap().catch((error) => {
+  console.error(error);
+  if (mapContainer) {
+    mapContainer.textContent = '지도를 불러오지 못했습니다. 콘솔 오류를 확인하세요.';
+  }
+});
 
