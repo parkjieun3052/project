@@ -1,10 +1,8 @@
 const mapContainer = document.getElementById('map');
 const resultList = document.getElementById('resultList');
 
-const getEnvValue = (key) => {
-  const env = typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env : {};
-  return env[key] ?? '';
-};
+const kakaoJsKey = import.meta.env.VITE_KAKAO_JAVASCRIPT_KEY;
+const kakaoRestKey = import.meta.env.VITE_KAKAO_REST_API_KEY;
 
 const kakaoJsKey = getEnvValue('VITE_KAKAO_JAVASCRIPT_KEY');
 const kakaoRestKey = getEnvValue('VITE_KAKAO_REST_API_KEY');
