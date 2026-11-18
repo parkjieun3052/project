@@ -72,9 +72,17 @@ VITE_KAKAO_JAVASCRIPT_KEY=your_kakao_javascript_key
 VITE_KAKAO_REST_API_KEY=your_kakao_rest_api_key
 VITE_PUBLIC_DATA_API_KEY=your_public_data_key
 VITE_MOLIT_API_KEY=your_molit_key
+VITE_PUBLIC_DATA_NATIONAL_URL=your_national_support_api_url
+VITE_PUBLIC_DATA_LOCAL_URL=your_local_support_api_url
+VITE_PUBLIC_DATA_YOUTH_URL=your_youth_support_api_url
+VITE_PUBLIC_DATA_KEY_PARAM=serviceKey
+VITE_SUPPORT_PROXY_ENDPOINT=/api/support
 ```
 
 > 실제 검색 기능을 사용하려면 위 값이 필요합니다.
+
+정부지원사업 페이지는 브라우저에서 공공데이터 API를 직접 호출하지 않고,
+Vite 개발 서버의 `/api/support` 프록시를 통해 호출합니다.
 
 ## 실행 방법
 

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+   <meta charset="UTF-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <meta name="description" content="전국 및 지역별 심리상담 정부지원사업을 한눈에 확인해 보세요." />
+   <title>정부지원사업 안내 | 토닥</title>
+   <link rel="icon" type="image/png" href="/assets/counsellor-icon-Bw7qGlWz.png" />
+  <script type="module" crossorigin src="/assets/support-D6bKfljV.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/main-BZ6MNyim.js">
+  <link rel="stylesheet" crossorigin href="/assets/main-DCh4aIPk.css">
+</head>
+<body>
+   <header class="site-header">
+      <a class="brand" href="index.html" aria-label="토닥 홈">
+         <span class="brand-mark" aria-hidden="true"><img src="/assets/counsellor-icon-Bw7qGlWz.png" alt="토닥 로고" /></span>
+         <span class="brand-name">토닥</span>
+         <span class="brand-tagline">마음이 쉬어가는 곳</span>
+      </a>
+      <nav class="main-nav" id="mainNav">
+         <a href="search.html">상담센터 찾기</a>
+         <a href="#" class="inactive-link">상담사 찾기</a>
+         <a class="active" href="support.html">정부바우처</a>
+      </nav>
+      <div class="header-actions">
+         <a href="#" class="login-link inactive-link">로그인</a>
+         <button class="menu-button" id="menuButton" aria-label="메뉴 열기" aria-expanded="false"><span></span><span></span><span></span></button>
+      </div>
+   </header>
+
+   <main class="support-main">
+      <div class="breadcrumb"><a href="index.html">홈</a><span>›</span><span>정부지원사업 안내</span></div>
+      <section class="page-title">
+         <h1>정부지원사업 안내</h1>
+         <p>상담비 지원, 바우처, 정서지원 프로그램까지. 신청 가능한 사업을 빠르게 확인해 보세요.</p>
+      </section>
+
+      <section class="support-toolbar">
+         <div class="support-search-wrap">
+            <label class="sr-only" for="supportKeyword">사업명 검색</label>
+            <input id="supportKeyword" type="search" placeholder="사업명, 대상, 지역으로 검색" />
+         </div>
+         <div class="support-filters" role="group" aria-label="사업 분류 필터">
+            <button class="support-filter-chip active" data-scope="all" type="button">전체</button>
+            <button class="support-filter-chip" data-scope="국가" type="button">국가사업</button>
+            <button class="support-filter-chip" data-scope="지자체" type="button">지자체사업</button>
+            <button class="support-filter-chip" data-scope="연령별" type="button">연령별</button>
+         </div>
+         <div class="support-select-row" id="supportSelectRow">
+            <div class="support-select-wrap" id="supportRegionWrap">
+               <label for="supportRegion">지자체 선택</label>
+               <select id="supportRegion">
+                  <option value="all">전체 지역</option>
+                  <option value="서울">서울</option>
+                  <option value="경기">경기</option>
+                  <option value="인천">인천</option>
+                  <option value="부산">부산</option>
+                  <option value="대구">대구</option>
+                  <option value="대전">대전</option>
+                  <option value="광주">광주</option>
+                  <option value="세종">세종</option>
+                  <option value="강원">강원</option>
+                  <option value="충북">충북</option>
+                  <option value="충남">충남</option>
+                  <option value="전북">전북</option>
+                  <option value="전남">전남</option>
+                  <option value="경북">경북</option>
+                  <option value="경남">경남</option>
+                  <option value="제주">제주</option>
+               </select>
+            </div>
+            <div class="support-select-wrap" id="supportAgeWrap">
+               <label for="supportAge">연령 선택</label>
+               <select id="supportAge">
+                  <option value="all">전체 연령</option>
+                  <option value="아동">아동</option>
+                  <option value="청소년">청소년</option>
+                  <option value="청년">청년</option>
+                  <option value="성인">성인</option>
+                  <option value="중장년">중장년</option>
+                  <option value="보호자">보호자</option>
+               </select>
+            </div>
+         </div>
+      </section>
+
+      <section>
+         <div class="support-list-heading">
+            <h2>지원사업 목록</h2>
+            <p id="supportResultText">조건에 맞는 사업을 불러오는 중입니다.</p>
+         </div>
+         <div class="support-grid" id="supportGrid" aria-live="polite"></div>
+      </section>
+
+      <section class="support-guide">
+         <h2>신청 전 체크리스트</h2>
+         <ol>
+            <li>지원대상 연령, 소득, 거주지 조건을 먼저 확인하세요.</li>
+            <li>신분증, 주민등록등본, 건강보험 자격확인서 등 기본 서류를 준비하세요.</li>
+            <li>접수기간과 예산 소진 여부를 반드시 확인한 뒤 신청하세요.</li>
+         </ol>
+      </section>
+   </main>
+
+   <footer class="site-footer">
+      <div class="footer-brand"><strong>토닥</strong><span>당신의 마음에, 토닥.</span></div>
+      <div class="footer-links"><a href="#" class="inactive-link">이용약관</a><a href="#" class="inactive-link">개인정보처리방침</a><a href="mailto:hello@todak.example">문의하기</a></div>
+      <small>© TODAK. All rights reserved.</small>
+      <small class="footer-note">마음 돌봄의 시작을 함께합니다.</small>
+   </footer>
+
+</body>
+</html>
